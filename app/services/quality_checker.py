@@ -1,3 +1,4 @@
+import re
 from typing import Dict, Any, List
 from openai import OpenAI
 from app.core.config import settings
@@ -47,27 +48,36 @@ def call_model(prompt: str) -> str:
 
 
 def parse_quality_response(raw_text: str) -> Dict[str, Any]:
-    # Первая простая версия: оцениваем по наличию чисел и возвращаем «сырой» текст как summary.
-    # Потом заменим на разбор чёткого формата (JSON или явные маркеры).
-    total_score = 0.0
+    score = 0.0
 
-    # Простейшая эвристика: пытаемся найти число с '%' или похожее
-    import re
+    # Поддерживаем и "quality:", и "качество:"
+    m = re.search(r"(quality|качество)\s*:\s*(\d{1,3}|nan)", raw_text, re.IGNORECASE)
+    if m:
+        val = m.group(2)
+        if val.lower() != "nan":
+            try:
+                n = int(val)
+                if 0 <= n <= 100:
+                    score = float(n)
+            except ValueError:
+                pass
 
-    match = re.search(r"(\d{1,3})\s*[%/100]*", raw_text)
-    if match:
-        try:
-            val = int(match.group(1))
-            if 0 <= val <= 100:
-                total_score = float(val)
-        except ValueError:
-            pass
+    parts = re.split(r"(?i)первый отчет:|first report:|второй отчет:|second report:|третий отчет:|third report:", raw_text)
+    summary_text = raw_text
+    recommendations_text = ""
+
+    if len(parts) >= 4:
+        first = parts[1].strip()
+        # second = parts[2].strip()  # пока не используем
+        third = parts[3].strip()
+        summary_text = first
+        recommendations_text = third
 
     return {
-        "total_score": total_score,
+        "total_score": score,
         "criteria": {},
-        "summary": raw_text,
-        "recommendations": "",
+        "summary": summary_text,
+        "recommendations": recommendations_text,
         "raw_model_output": raw_text,
     }
 

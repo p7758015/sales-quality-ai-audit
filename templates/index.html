@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Нейро-контроль качества отдела продаж</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 24px; }
+        form { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        label { display: block; margin-top: 10px; font-weight: 600; }
+        textarea { width: 100%; min-height: 120px; }
+        input[type="file"] { margin-top: 5px; }
+        button { margin-top: 15px; padding: 8px 16px; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+        .score { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Нейро-контроль качества отдела продаж</h1>
+<p>Загрузите текст диалога или аудиозапись звонка, и сервис оценит работу менеджера по шкале 0–100% и даст разбор.</p>
+
+<form action="/web/analyze" method="post" enctype="multipart/form-data">
+    <label for="dialog_text">Текст диалога (опционально):</label>
+    <textarea id="dialog_text" name="dialog_text" placeholder="Клиент: ...&#10;Менеджер: ..."></textarea>
+
+    <label for="audio">Аудиофайл звонка (опционально):</label>
+    <input id="audio" name="audio" type="file" accept="audio/*">
+
+    <label for="content_mode">Режим анализа:</label>
+    <select id="content_mode" name="content_mode">
+        <option value="Manager +" selected>Manager + (акцент на менеджере)</option>
+        <option value="Client +">Client + (акцент на клиенте)</option>
+        <option value="Диалог">Диалог (общее качество)</option>
+    </select>
+
+    <p><small>Можно отправить только текст, только аудио или оба — при наличии аудио приоритет у него.</small></p>
+
+    <button type="submit">Оценить качество</button>
+</form>
+
+{% if result %}
+<div class="result">
+    <div class="score">Оценка качества: {{ result.total_score }}%</div>
+    <h3>Краткий разбор</h3>
+    <pre>{{ result.summary }}</pre>
+
+    {% if result.recommendations %}
+        <h3>Рекомендации</h3>
+        <pre>{{ result.recommendations }}</pre>
+    {% endif %}
+</div>
+{% endif %}
+
+</body>
+</html>

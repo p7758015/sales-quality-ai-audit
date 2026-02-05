@@ -50,4 +50,6 @@ Write all three reports one after another, clearly separated as:
 "First report:", then text,
 "Second report:", then quality,
 "Third report:", then explanation.
+
+IMPORTANT: write ALL outputs in Russian language.
 """
