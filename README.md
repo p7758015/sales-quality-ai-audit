@@ -39,7 +39,7 @@
 #### 1. Клонируйте репозиторий
 
 ```bash
-git clone https://github.com/USER/sales-quality-ai-audit.git
+git clone https://github.com/p7758015/sales-quality-ai-audit.git
 cd sales-quality-ai-audit
 ```
 
