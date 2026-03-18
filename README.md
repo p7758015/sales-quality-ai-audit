@@ -45,7 +45,7 @@ AI-сервис автоматически анализирует звонки (
 ---
 
 ## Architecture
-
+```text
 User → Web Interface / API → FastAPI backend  
                          ↓  
                    Whisper (speech-to-text)  
@@ -53,7 +53,7 @@ User → Web Interface / API → FastAPI backend
                        GPT (analysis)  
                          ↓  
              Scoring + Summary + Recommendations  
-
+```
 ---
 
 ## Возможности
@@ -91,7 +91,7 @@ POST /webhook/new_call_recording
   "manager_id": "m-42",
   "recording_url": "https://storage.example.com/calls/123.mp3"
 }
-
+```
 Результат:
 
 - оценка звонка  
